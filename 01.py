@@ -10,6 +10,16 @@ import pandas as pd
 calculo = ""
 valorLista = []
 
+# PANDAS
+# hora de usar o pandas (o único lugar que eu encontrei que da para encaixar o pandas é na parte de entrada do texto, dai tanto faz se for digitado "media" ou "MÉDIA")
+dataFrame = pd.DataFrame({
+     "media": ["media", "Media", "média", "Média", "MEDIA", "MÉDIA", "", "", "", ""],
+     "mediana": ["mediana", "Mediana", "MEDIANA", "", "", "", "", "", "", ""],
+     "moda": ["moda", "Moda", "MODA", "", "", "", "", "", "", ""],
+     "variancia": ["variancia", "variância", "Variancia", "Variância", "VARIANCIA", "VARIÂNCIA", "", "", "", ""],
+     "desviopadrao": ["desviopadrao", "desviopadrão", "Desviopadrao", "Desviopadrão", "desvioPadrao", "desvioPadrão", "DesvioPadrao", "DesvioPadrão","DESVIOPADRAO", "DESVIOPADRÃO"]
+}) # por que tem um bando de aspas vazias? numa "planilha" do pandas todas as colunas têm que ter a mesma quantidade de linhas, ou é todas as linhas a mesma quantidade de colunas
+
 # ÁREA PARA FUNÇÕES
 # funções de botão
 # enviando o tipo de cálculo para o sistema e verificando // da para fazer com a db aqui também 
@@ -17,7 +27,21 @@ def enviarTipoCalculo():
     # enviando o dado para o sistema
     global calculo
     calculo = entradaCalculoUsuario.get()
-    saidaCalculoUsuario.config(text=f"o cálculo escolhido foi o de {calculo}")
+
+    # a verificação com o pandas começa aqui
+    ocorrencias = {}
+    for coluna in dataFrame.columns:
+         ocorrencias[coluna] = dataFrame.index[dataFrame[coluna] == calculo].tolist()
+    
+    encontrado = False
+    for coluna, indices in ocorrencias.items():
+         if indices:
+              encontrado = True
+              saidaCalculoUsuario.config(text=f"o tipo de cálculo digitado foi {calculo} e é encontrado em {coluna}")
+              calculo = coluna
+    if not encontrado:
+         saidaCalculoUsuario.config(text=f"informe um valor valido")
+    # termina aqui
 
 # enviando a lista de valores
 def enviarValorLista():
@@ -31,29 +55,28 @@ def enviarValorLista():
 
 # função para realizar o cálculo
 def realizarCalculos():
-    seriesValorLista = pd.Series(valorLista)
     if calculo == "media":
-        resultado = seriesValorLista.mean()
+        resultado = statistics.mean(valorLista)
         saidaResultado.config(text=f"o resultado do cálculo de {calculo} é {resultado}")
 
         plt.axhline(resultado, color='r', linestyle='--', linewidth=2, label=f'{calculo}: {resultado}')
     elif calculo == "mediana":
-        resultado = seriesValorLista.median()
+        resultado = statistics.median(valorLista)
         saidaResultado.config(text=f"o resultado do cálculo de {calculo} é {resultado}")
 
         plt.axhline(resultado, color='r', linestyle='--', linewidth=2, label=f'{calculo}: {resultado}')
     elif calculo == "moda":
-        resultado = seriesValorLista.mode()
+        resultado = statistics.mode(valorLista)
         saidaResultado.config(text=f"o resultado do cálculo de {calculo} é {resultado}")
 
         plt.axhline(resultado, color='r', linestyle='--', linewidth=2, label=f'{calculo}: {resultado}')
     elif calculo == "variancia":
-        resultado = seriesValorLista.var
+        resultado = statistics.variance(valorLista)
         saidaResultado.config(text=f"o resultado do cálculo de {calculo} é {resultado}")
 
         plt.axhline(resultado, color='r', linestyle='--', linewidth=2, label=f'{calculo}: {resultado}')
     elif calculo == "desvioPadrao":
-        resultado = seriesValorLista.std()
+        resultado = statistics.stdev(valorLista)
         saidaResultado.config(text=f"o resultado do cálculo de {calculo} é {resultado}")
 
         plt.axhline(resultado, color='r', linestyle='--', linewidth=2, label=f'{calculo}: {resultado}')

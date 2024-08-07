@@ -9,10 +9,11 @@ O projeto tem como objetivo realizar algumas operações estatísticas como: mé
 ### Desenvolvimento
 Tal calculadora foi desenvolvida inteiramente em Python com auxilio de algumas bibliotecas do mesmo; Bibliotecas como: Tkinter, Pandas e MatplotLib.
 
-
 ### Bibliotecas
 Tkinter: usado para a criação da interface gráfica
+
 Pandas: usado para a execução dos cálculos de forma rápida e eficiente
+
 MatplotLib: usado para a geração de gráficos para que o usuário possa ter uma melhor visão do resultado
 
 ### Execução do Projeto
